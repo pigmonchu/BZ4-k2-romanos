@@ -43,5 +43,9 @@ def romano_a_arabigo(numRomano):
 
     return numArabigo
 
-romano_a_arabigo('IX')
+def arabigo_a_romano(valor):
+    1.- Descomponer valor en dígitos separando millares, centenas, decenas y unidades
+    2.- Procesar uno a uno estos dígitos y transformarlos en su forma romana 
+    3.- Ir concatenando cada resultado en una cadena completa
+    4.- Devolverla
 
