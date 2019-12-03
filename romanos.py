@@ -10,6 +10,8 @@ rangos = {
 }
 
 def numParentesis(cadena):
+    return len(cadena)-len(cadena.lstrip('('))
+
     num = 0
     for c in cadena:
         if c == '(':
@@ -27,12 +29,11 @@ def contarParentesis(numRomano):
     while ix < len(grupoParentesis):
         grupo = grupoParentesis[ix]
         numP = numParentesis(grupo)
-        if numP > 0:
-            for j in range(ix, ix+numP):
-                if grupoParentesis[j] != '':
-                   return 0
-            res.append(numP, grupo[numP:])
-            ix += numP
+        for j in range(ix+1, ix+numP):
+            if grupoParentesis[j] != '':
+                return 0
+        res.append((numP, grupo[numP:]))
+        ix += max(numP,1)
 
     return res
         
@@ -92,7 +93,8 @@ def invertir(cad):
     return res
 
 def arabigo_a_romano(valor):
-    cad = invertir(str(valor))
+    #cad = invertir(str(valor))
+    cad = str(valor)[::-1]
     res = ''
 
     for i in range(len(cad)-1, -1, -1):
@@ -109,3 +111,4 @@ def arabigo_a_romano(valor):
             res += rangos[i][1]+rangos[i]['next']
 
     return res
+
