@@ -12,6 +12,9 @@ rangos = {
 def numParentesis(cadena):
     return len(cadena)-len(cadena.lstrip('('))
 
+    np = cadena.count('(')
+    return np - cadena.count('(', np)
+
     num = 0
     for c in cadena:
         if c == '(':
