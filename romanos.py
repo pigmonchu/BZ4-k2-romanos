@@ -102,9 +102,30 @@ def invertir(cad):
         res+= cad[i]
     return res
 
-def arabigo_a_romano(valor):
-    #cad = invertir(str(valor))
-    cad = str(valor)[::-1]
+def gruposDeMil(num):
+    cad = str(num)
+    dac = invertir(cad)
+    grupos = []
+    
+    rango = 0
+    for i in range(0, len(dac), 3):
+        grupos.append([rango, int(invertir(dac[i:i+3]))])
+        rango += 1
+
+    for i in range(len(grupos)-1):
+        grupoMenor = grupos[i]
+        grupoMayor = grupos[i+1]
+        unidadesMayor = grupoMayor[1] % 10
+
+        if unidadesMayor < 4:
+            grupoMenor[1] = grupoMenor[1] + unidadesMayor * 1000
+            grupoMayor[1] = grupoMayor[1] - unidadesMayor
+
+    grupos.reverse()
+    return grupos
+
+def arabigo_individual(valor):
+    cad = invertir(str(valor))
     res = ''
 
     for i in range(len(cad)-1, -1, -1):
@@ -121,4 +142,26 @@ def arabigo_a_romano(valor):
             res += rangos[i][1]+rangos[i]['next']
 
     return res
+
+
+def arabigo_a_romano(valor):
+    g1000 = gruposDeMil(valor)
+    romanoGlobal = ''
+
+    for grupo in g1000:
+        rango = grupo[0]
+        numero = grupo[1]
+        if numero > 0:
+            miRomano = '(' * rango + arabigo_individual(numero) + ')'*rango
+        else: 
+            miRomano = ''
+        romanoGlobal += miRomano
+
+    return romanoGlobal
+
+
+
+
+
+
 
