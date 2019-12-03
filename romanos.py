@@ -10,11 +10,6 @@ rangos = {
 }
 
 def numParentesis(cadena):
-    return len(cadena)-len(cadena.lstrip('('))
-
-    np = cadena.count('(')
-    return np - cadena.count('(', np)
-
     num = 0
     for c in cadena:
         if c == '(':
@@ -22,7 +17,6 @@ def numParentesis(cadena):
         else:
             break
     return num
-
 
 def contarParentesis(numRomano):
     res = []
@@ -32,24 +26,29 @@ def contarParentesis(numRomano):
     while ix < len(grupoParentesis):
         grupo = grupoParentesis[ix]
         numP = numParentesis(grupo)
-        for j in range(ix+1, ix+numP):
-            if grupoParentesis[j] != '':
-                return 0
-        res.append((numP, grupo[numP:]))
-        ix += max(numP,1)
+        if numP > 0:
+            for j in range(ix+1, ix+numP):
+                if grupoParentesis[j] != '':
+                    return 0 #Explota o Falla
+            ix += numP - 1
+
+        if len(grupo[numP:]) > 0:
+            res.append((numP, grupo[numP:]))
+
+        ix += 1
+        
+    #Este if sirve para tratar los casos de parentesis mal formateados
+    for i in range(len(res)-1):
+        if res[i][0] <= res[i+1][0]:
+            return 0
 
     return res
-        
 
-
-
-
-
-
-def romano_a_arabigo(numRomano):
-    numArabigo = 0
+def romano_individual(numRomano):
     numRepes = 1
     ultimoCaracter = ''
+    numArabigo = 0
+
     for letra in numRomano: 
         #incrementamos el valor del número arábigo con el valor numérico del símbolo romano
         if letra in valores:
@@ -62,26 +61,18 @@ def romano_a_arabigo(numRomano):
                 numRepes += 1
                 if letra in valores5:
                     return 0
-
                 if numRepes > 3:
                     return 0
-
-
             elif valores[ultimoCaracter] < valores[letra]:
                 if numRepes > 1: # No permite repeticiones en las restas
                     return 0
-
                 if ultimoCaracter in valores5: #No permite restas de valores de 5 (5, 50, 500)
                     return 0
-
                 distancia = simbolosOrdenados.index(letra) - simbolosOrdenados.index(ultimoCaracter) #No permite que se resten unidades de más de un orden
                 if distancia > 2:
                     return 0
-
                 numArabigo -= valores[ultimoCaracter]*2
                 numRepes = 1
-        elif ultimoCaracter == ')':
-            numArabigo = numArabigo * 1000
         else:  #si el simbolo romano no es permitido devolvemos error (0)
             return 0
 
@@ -89,7 +80,23 @@ def romano_a_arabigo(numRomano):
 
     return numArabigo
 
+
+def romano_a_arabigo(numRomano):
+    numArabigoTotal = 0
+    res = contarParentesis(numRomano)
+
+    for elemento in res:
+        romano = elemento[1]
+        factor = pow(10, 3 * elemento[0])
+
+        numArabigoTotal += romano_individual(romano) * factor
+
+    return numArabigoTotal
+
+
 def invertir(cad):
+    return cad[::-1]
+
     res = ''
     for i in range(len(cad)-1, -1, -1):
         res+= cad[i]
